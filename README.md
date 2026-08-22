@@ -20,12 +20,6 @@
 
 🛡️ <strong>PRIVATE CONTROL PANEL</strong>
 
-<br><br>
-
-
-
-<br><br>
-
 ### 💜 Made by PR
 
 <br>
