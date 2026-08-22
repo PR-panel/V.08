@@ -1,0 +1,5 @@
+Artwork in this folder was generated specifically for the PR-config project using an
+AI image model. No third-party trademarked logos, crests, or characters were
+used or referenced. You are free to use, modify, and redistribute these
+images as part of the PR-config project under the same license as the rest of
+this repository (MIT — see /LICENSE).

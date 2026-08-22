@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>{{ panel_name }} · Status</title>
+<link rel="icon" href="/static/img/PR-logo.png">
+<link rel="apple-touch-icon" href="/static/img/PR-logo.png">
+<link rel="stylesheet" href="/static/css/fonts.css">
+<link rel="stylesheet" href="/static/css/theme.css">
+<link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body>
+{% include "_icons.html" %}
+<div class="auth-shell">
+  <div class="sparkle-field"></div>
+  <div class="auth-card" style="max-width:460px;">
+    <img class="auth-logo" src="/static/img/PR-logo.png" alt="PR-config">
+    <div class="brand-title" data-i18n="status_page_title">وضعیت اشتراک</div>
+    <div id="statusContent" class="mt-20">
+      <div class="text-center muted" data-i18n="loading">در حال بارگذاری...</div>
+    </div>
+    <div class="flex justify-between items-center mt-24">
+      <div class="lang-toggle">
+        <button type="button" data-lang="fa">FA</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+      <button class="icon-btn" id="themeToggle" title="theme"><svg><use href="#icon-moon"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<script src="/static/js/i18n.js"></script>
+<script src="/static/js/common.js"></script>
+<script>
+document.querySelectorAll('.lang-toggle button').forEach(btn => {
+  btn.addEventListener('click', () => { STANNG.setLang(btn.dataset.lang); render(); STANNG.playSfx('toggle', 0.3); });
+});
+document.getElementById('themeToggle').addEventListener('click', () => {
+  STANNG.setTheme(STANNG.getTheme() === 'dark' ? 'light' : 'dark');
+  STANNG.playSfx('toggle', 0.3);
+});
+
+const uid = "{{ uid }}";
+let lastData = null;
+
+function render() {
+  const el = document.getElementById('statusContent');
+  if (!lastData) return;
+  if (lastData.error) {
+    el.innerHTML = `<div class="text-center muted">${STANNG.t('status_not_found')}</div>`;
+    return;
+  }
+  const d = lastData;
+  const pct = d.quota_bytes > 0 ? Math.min(100, (d.used_bytes / d.quota_bytes) * 100) : 0;
+  const quotaTxt = d.quota_gb > 0 ? `${d.used_gb} GB / ${d.quota_gb} GB` : `${d.used_gb} GB / ${STANNG.t('unlimited')}`;
+  const statusPill = d.enabled
+    ? `<span class="pill pill-on"><span class="pill-dot"></span>${STANNG.t('active')}</span>`
+    : `<span class="pill pill-off"><span class="pill-dot"></span>${STANNG.t('status_disabled')}</span>`;
+  const expiry = d.expire_at ? new Date(d.expire_at * 1000).toLocaleDateString(STANNG.getLang() === 'fa' ? 'fa-IR' : 'en-US') : STANNG.t('unlimited');
+
+  el.innerHTML = `
+    <div class="text-center mb-16">${statusPill}</div>
+    <div class="status-panel-card">
+      <div class="status-section-label">${STANNG.t('status_usage')}</div>
+      <div class="status-meter"><span style="width:${pct}%"></span></div>
+      <div class="small muted mt-8 text-center">${quotaTxt}</div>
+    </div>
+    <div class="status-grid">
+      <div class="status-panel-card status-stat">
+        <div class="status-section-label">${STANNG.t('status_devices')}</div>
+        <div class="status-stat-value">${d.active_connections}${d.max_connections ? ' / ' + d.max_connections : ''}</div>
+      </div>
+      <div class="status-panel-card status-stat">
+        <div class="status-section-label">${STANNG.t('status_expiry')}</div>
+        <div class="status-stat-value status-expiry-value">${expiry}</div>
+      </div>
+    </div>
+    <div class="status-panel-card status-subscription">
+      <div class="status-section-label">${STANNG.t('status_subscription_link')}</div>
+      <div class="status-link-row">
+        <code id="subscriptionUrl">${d.subscription_url || ''}</code>
+        <button class="status-copy-btn" type="button" id="copySubscription" title="${STANNG.t('copy')}">
+          <svg><use href="#icon-copy"/></svg>
+        </button>
+      </div>
+    </div>
+  `;
+  document.getElementById('copySubscription').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(d.subscription_url || '');
+      STANNG.toast(STANNG.t('copied'), 'success', 1600);
+      STANNG.playSfx('click', 0.4);
+    } catch (e) {
+      STANNG.toast('error', 'error');
+    }
+  });
+}
+
+fetch(`/api/status/${uid}`).then(r => {
+  if (!r.ok) { lastData = { error: true }; render(); return; }
+  return r.json();
+}).then(d => { if (d) { lastData = d; render(); } });
+</script>
+</body>
+</html>
