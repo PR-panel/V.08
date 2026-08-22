@@ -14,7 +14,7 @@
  P . R   P A N E L
 </pre>
 
-
+### ⚡ PRIVATE • POWERFUL • PERSONAL
 ### 💜 Made by PR
 
 <br>
