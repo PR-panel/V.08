@@ -16,9 +16,6 @@
  P . R   P A N E L
 </pre>
 
-<br>
-
-🛡️ <strong>PRIVATE CONTROL PANEL</strong>
 
 ### 💜 Made by PR
 
