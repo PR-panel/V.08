@@ -1,7 +1,5 @@
 <div align="center">
 
-# 💜 PR PANEL
-
 ### ⚡ PRIVATE • POWERFUL • PERSONAL
 
 <br>
