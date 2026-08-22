@@ -1,7 +1,5 @@
 <div align="center">
 
-### ⚡ PRIVATE • POWERFUL • PERSONAL
-
 <br>
 
 <pre>
