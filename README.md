@@ -14,7 +14,7 @@
  ██║      ██╔══██╗
    ╚═╝      ╚═╝  ╚═╝  
 
-     P . R   P A N E L
+  P . R   P A N E L
 </pre>
 
 <br>
